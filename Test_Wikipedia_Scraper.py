@@ -31,6 +31,7 @@ if(source is not None):
             break
         if(header.text == "Contents"):
             continue
-        print(header.text[0:-6])
+        header_val = header.text[0:-6]
+        print(header_val)
 
 
