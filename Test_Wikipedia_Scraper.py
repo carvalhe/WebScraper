@@ -33,8 +33,21 @@ if(source is not None):
         if(header.text == "Contents"):
             continue
         header_val = header.text[0:-6]
-        paragraph = header.find_next('p').text
+        #paragraph = header.find_next('p')
         print(header_val)
-        print(paragraph)
+        
+        nextNode = header.find_next('p')
+        print(nextNode.text)
+        while True:
+            nextNode = nextNode.next_sibling
+            if nextNode.name == 'p':
+                print (nextNode.text)
+            else:
+                break
+
+        #while(paragraph):
+        #    print(paragraph.text)
+        #    paragraph = paragraph.find_next('p')
+        #print(paragraph)
 
 
