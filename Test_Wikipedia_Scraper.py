@@ -17,11 +17,12 @@ if(source is not None):
     soup = BeautifulSoup(source.text, 'lxml')
     #if(DEBUG):
     #    print(soup.prettify())
+    #article = soup.find('div', class_='mw-parsed-output')
+    #print(article)
 
     #### Parse through the soup for the information you want
     # The first grab the main elements of the page
     summary = soup.select('p')[0].text
-    #header = soup.find('span', class_='mw-headline').text
     # intro = '\n'.join([para.text for para in paragraphs[0:5]])
     if(DEBUG):
         print(summary)
@@ -32,6 +33,8 @@ if(source is not None):
         if(header.text == "Contents"):
             continue
         header_val = header.text[0:-6]
+        paragraph = header.find_next('p').text
         print(header_val)
+        print(paragraph)
 
 
