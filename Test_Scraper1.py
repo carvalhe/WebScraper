@@ -22,7 +22,7 @@ for article in soup.find_all('article'):
     print(headline)
 
     # summary = article.div.p.text This might work, but we specifically want the entry content. this
-    # could reaturn the footer or other things
+    # could return the footer or other things
     # Instead, change it slighlty to find entry content.
     summary =  article.find('div', class_='entry-content').p.text
     print(summary)
