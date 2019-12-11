@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 import csv
 
-DEBUG = False
+DEBUG = True
 
 #### Set up where you are requesting from
 user_input = input("Enter your search string: ")
@@ -32,7 +32,7 @@ if(source is not None):
 
     #### Parse through the soup for the information you want
     # The first grab the main elements of the page
-    summary = soup.select('p')[0].text
+    summary = soup.select('p')[1].text
     # intro = '\n'.join([para.text for para in paragraphs[0:5]])
     if(DEBUG):
         print(summary)
@@ -43,7 +43,7 @@ if(source is not None):
     csv_writer.writerow(['Headline', 'Information'])
     # now you need to find headers and get any paragraph info between each h2
     for header in soup.select('h2'):
-        if(header.text == "See also[edit]"):
+        if(header.text == "See also[edit]" or header.text == "External links[edit]" or header.text == "Notes[edit]"):
             break
         if(header.text == "Contents"):
             continue
@@ -52,8 +52,9 @@ if(source is not None):
             print(header_val)
         
         nextNode = header.find_next('p')
+        # print(nextNode.text)
         paragraph = nextNode.text + '\n'
-
+        
         if(DEBUG):
             print(nextNode.text)
         while True:
