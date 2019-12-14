@@ -43,28 +43,65 @@ if(source is not None):
     csv_writer.writerow(['Headline', 'Information'])
     # now you need to find headers and get any paragraph info between each h2
     for header in soup.select('h2'):
-        if(header.text == "See also[edit]" or header.text == "External links[edit]" or header.text == "Notes[edit]"):
+        if(header.text == "External links[edit]"):
             break
-        if(header.text == "Contents"):
+        if(header.text == "Contents") or header.text == "Notes[edit]" or header.text == "See also[edit]":
             continue
-        header_val = header.text[0:-6]
-        if(DEBUG):
-            print(header_val)
-        
-        nextNode = header.find_next('p')
-        # print(nextNode.text)
-        paragraph = nextNode.text + '\n'
-        
-        if(DEBUG):
-            print(nextNode.text)
-        while True:
-            nextNode = nextNode.next_sibling
-            if nextNode.name == 'p':
-                paragraph += nextNode.text + '\n'
-                if(DEBUG):
-                    print (nextNode.text)
-            else:
-                break
-        csv_writer.writerow([header_val, paragraph])
+        if(header.text == "References[edit]"):
+            csv_writer.writerow(['References'])
+            # this is the bottom of the page, make a specific section in csv file for links in references
+            # loop through any <li> given
+            nextNode = header.find_next('li')
+            '''
+            for refrences in header.find('li'):
+                if refrences.name == 'li':
+                    print('yes')
+                else:
+                    print(refrences.name)
+                    print('no')
+                    break
+
+            while(True):
+                
+                if nextNode.name == 'li':
+                    citation = nextNode.find('cite', class_='citation web')
+                    link = citation.find('a', href= [True])
+                    link = link['href']
+                    # must split it to grab the hyperlink
+                    citation = citation.text.split("href")
+                    csv_writer.writerow([citation, link])
+                else:
+                    print(nextNode.name)
+                    break
+                '''
+            citation = nextNode.find('cite', class_='citation web')
+            link = citation.find('a', href= [True])
+            link = link['href']
+            # must split it to grab the hyperlink
+            citation = citation.text.split("href")
+            csv_writer.writerow([citation, link])
+
+
+            break
+        else:
+            header_val = header.text[0:-6]
+            if(DEBUG):
+                print(header_val)
+            
+            nextNode = header.find_next('p')
+            # print(nextNode.text)
+            paragraph = nextNode.text + '\n'
+            
+            if(DEBUG):
+                print(nextNode.text)
+            while True:
+                nextNode = nextNode.next_sibling
+                if nextNode.name == 'p':
+                    paragraph += nextNode.text + '\n'
+                    if(DEBUG):
+                        print (nextNode.text)
+                else:
+                    break
+            csv_writer.writerow([header_val, paragraph])
 
 csv_file.close()
