@@ -32,7 +32,7 @@ if(source is not None):
 
     #### Parse through the soup for the information you want
     # The first grab the main elements of the page
-    summary = soup.select('p')[1].text
+    summary = soup.select('p')[0].text
     # intro = '\n'.join([para.text for para in paragraphs[0:5]])
     if(DEBUG):
         print(summary)
@@ -41,17 +41,20 @@ if(source is not None):
 
     # set up the next row for the csv
     csv_writer.writerow(['Headline', 'Information'])
-    # now you need to find headers and get any paragraph info between each h2
+    # now you need to find headers and get any paragraph info between each h2. Careful as some pages have an [edit] next
+    # to the headers and some don't.
     for header in soup.select('h2'):
         if(header.text == "External links[edit]"):
             break
-        if(header.text == "Contents") or header.text == "Notes[edit]" or header.text == "See also[edit]":
+        if(header.text == "Contents") or header.text == "Notes[edit]" or header.text == "See also[edit]" or header.text == "Notes" or header.text == "See also":
             continue
-        if(header.text == "References[edit]"):
+        if(header.text == "References[edit]" or header.text == "References"):
             csv_writer.writerow(['References'])
             # this is the bottom of the page, make a specific section in csv file for links in references
             # loop through any <li> given
             nextNode = header.find_next('li')
+            nextNode = nextNode.find_next('li')
+            
             '''
             for refrences in header.find('li'):
                 if refrences.name == 'li':
@@ -74,6 +77,7 @@ if(source is not None):
                     print(nextNode.name)
                     break
                 '''
+            
             citation = nextNode.find('cite', class_='citation web')
             link = citation.find('a', href= [True])
             link = link['href']
